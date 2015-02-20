@@ -59,6 +59,10 @@ Connection.prototype.on = function (name, callback) {
   return this.eventEmitter.on(name, callback);
 };
 
+Connection.prototype.once = function (name, callback) {
+  return this.eventEmitter.once(name, callback);
+};
+
 Connection.prototype._resetFake = function () {
   var self = this;
   self.eventEmitter.removeAllListeners();

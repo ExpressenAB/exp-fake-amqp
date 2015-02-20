@@ -69,4 +69,16 @@ describe("fakeAmqp", function () {
       });
     });
   });
+
+  it("Connection emits ready when using on", function (done) {
+    var conn = fakeAmqp.createConnection();
+    conn.connect();
+    conn.on("ready", done);
+  });
+
+  it("Connection emits ready when using once", function (done) {
+    var conn = fakeAmqp.createConnection();
+    conn.connect();
+    conn.once("ready", done);
+  });
 });

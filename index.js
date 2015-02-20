@@ -1,3 +1,4 @@
+var util = require("util");
 var EventEmitter = require("events").EventEmitter;
 var Promise = require("bluebird");
 
@@ -5,8 +6,9 @@ function Connection(options, implOptions, readyCallback) {
   this.readyCallback = readyCallback;
   this.queues = {};
   this.exchanges = {};
-  this.eventEmitter = new EventEmitter();
 }
+
+util.inherits(Connection, EventEmitter);
 
 function Exchange(connection, name, options) {
   this.name = name;
@@ -26,7 +28,7 @@ function Queue(connection, name, options) {
 Connection.prototype.connect = function () {
   var self = this;
   setImmediate(function () {
-    self.eventEmitter.emit("ready");
+    self.emit("ready");
     if (self.readyCallback) {
       self.readyCallback();
     }
@@ -61,17 +63,9 @@ Connection.prototype.disconnect = function () {
   this._resetFake();  
 }
 
-Connection.prototype.on = function (name, callback) {
-  return this.eventEmitter.on(name, callback);
-};
-
-Connection.prototype.once = function (name, callback) {
-  return this.eventEmitter.once(name, callback);
-};
-
 Connection.prototype._resetFake = function () {
   var self = this;
-  self.eventEmitter.removeAllListeners();
+  self.removeAllListeners();
   var queueList = Object.keys(self.queues).map(function (key) {
     return self.queues[key];
   });

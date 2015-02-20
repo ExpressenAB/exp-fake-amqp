@@ -1,7 +1,7 @@
 {
   "name": "exp-fake-amqp",
   "description": "Stubbing AMQP",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "AB Kvällstidningen Expressen",
   "contributors": [
     "Anders Kindberg <ndrsbngtssn@yahoo.se>",

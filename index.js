@@ -55,6 +55,12 @@ Connection.prototype.queue = function (name, options, callback) {
   callback(queue);
 };
 
+Connection.prototype.disconnect = function () {
+  var self = this;
+  self.eventEmitter.emit("close");
+  this._resetFake();  
+}
+
 Connection.prototype.on = function (name, callback) {
   return this.eventEmitter.on(name, callback);
 };
@@ -100,8 +106,10 @@ Queue.prototype.subscribe = function (options, callback) {
 
   var consumerTag = "tag-" + tagCounter++;
   this.subscribers.push({callback: callback, tag: consumerTag});
+  var acknowledge = function () {
+  };
   var sendMessage = function (entry) {
-    callback(entry.message, {}, {routingKey: entry.routingKey});
+    callback(entry.message, {}, {routingKey: entry.routingKey}, {acknowledge: acknowledge});
   };
   while (this.pending.length > 0) {
     var entry = this.pending.shift();
@@ -116,6 +124,9 @@ Queue.prototype.unsubscribe = function (consumerTag) {
   this.subscribers = this.subscribers.filter(function (subscriber) {
     return subscriber.tag !== consumerTag;
   });
+  var result = Promise.resolve({consumerTag: consumerTag});
+  result.addCallback = result.then.bind(result);
+  return result;
 };
 
 Queue.prototype.destroy = function () {

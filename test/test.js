@@ -70,6 +70,27 @@ describe("fakeAmqp", function () {
     });
   });
 
+  it("Invokes a promise callback on unsubscribe", function (done) {
+      connection.queue("foo", {}, function (queue) {
+        queue.subscribe(function (msg) {
+          //noop
+        }).addCallback(function (ok) {
+          setImmediate(function () {
+            queue.unsubscribe(ok.consumerTag).addCallback(function (ok) {
+                done();
+            });
+          });
+        });
+      })
+  });
+
+  it("Connection emits close on disconnect", function (done) {
+    var conn = fakeAmqp.createConnection();
+    conn.connect();
+    conn.on("close", done);
+    conn.disconnect();  
+  })
+
   it("Connection emits ready when using on", function (done) {
     var conn = fakeAmqp.createConnection();
     conn.connect();

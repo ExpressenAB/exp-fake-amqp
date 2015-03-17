@@ -19,3 +19,14 @@ connection.queue("theQueue", {}, function (queue) {
 ```
 
 For further examples see the tests.
+
+### Overriding AMQP
+You might want to override `amqp` with `fake-amqp` in tests. This can be done this way:
+
+```javascript
+var amqp = require("amqp");
+var fakeAmqp = require("exp-fake-amqp");
+
+amqp.Connection = fakeAmqp.Connection;
+amqp.createConnection = fakeAmqp.createConnection;
+```

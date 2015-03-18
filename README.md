@@ -1,6 +1,8 @@
 fake-amqp
 =========
 
+[![Build Status](https://travis-ci.org/ExpressenAB/exp-fake-amqp.svg)](https://travis-ci.org/ExpressenAB/exp-fake-amqp)
+
 Example usage:
 
 ```javascript

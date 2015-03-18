@@ -25,6 +25,8 @@ function Queue(connection, name, options) {
   this.pending = [];
 }
 
+util.inherits(Queue, EventEmitter);
+
 Connection.prototype.connect = function () {
   var self = this;
   setImmediate(function () {
@@ -59,8 +61,8 @@ Connection.prototype.queue = function (name, options, callback) {
 
 Connection.prototype.disconnect = function () {
   var self = this;
-  self.eventEmitter.emit("close");
-  this._resetFake();  
+  self.emit("close");
+  this._resetFake();
 }
 
 Connection.prototype._resetFake = function () {
@@ -111,6 +113,7 @@ Queue.prototype.subscribe = function (options, callback) {
   }
   var result = Promise.resolve({consumerTag: consumerTag});
   result.addCallback = result.then.bind(result);
+  this.emit("basicConsumeOk");
   return result;
 };
 
@@ -128,9 +131,6 @@ Queue.prototype.destroy = function () {
   this.subscribers = [];
   this.pending = [];
   this.bindings = [];
-};
-
-Queue.prototype.on = function () {
 };
 
 Queue.prototype._wantsKey = function (routingKey, exchange) {

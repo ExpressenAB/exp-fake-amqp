@@ -88,7 +88,7 @@ describe("fakeAmqp", function () {
     var conn = fakeAmqp.createConnection();
     conn.connect();
     conn.on("close", done);
-    conn.disconnect();  
+    conn.disconnect();
   })
 
   it("Connection emits ready when using on", function (done) {
@@ -101,5 +101,14 @@ describe("fakeAmqp", function () {
     var conn = fakeAmqp.createConnection();
     conn.connect();
     conn.once("ready", done);
+  });
+
+  it("Queue emits basicConsumeOk when using once", function (done) {
+    var conn = fakeAmqp.createConnection();
+    conn.connect();
+    connection.queue("foo", {}, function (queue) {
+      queue.once("basicConsumeOk", done);
+      queue.subscribe(function (msg) {});
+    });
   });
 });

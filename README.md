@@ -22,7 +22,9 @@ connection.queue("theQueue", {}, function (queue) {
 
 For further examples see the tests.
 
+
 ### Overriding AMQP
+
 You might want to override `amqp` with `fake-amqp` in tests. This can be done this way:
 
 ```javascript
@@ -31,4 +33,15 @@ var fakeAmqp = require("exp-fake-amqp");
 
 amqp.Connection = fakeAmqp.Connection;
 amqp.createConnection = fakeAmqp.createConnection;
+```
+
+If you are using [exp-amqp-connection](https://www.npmjs.com/package/exp-amqp-connection) you can use [proxyquire](https://www.npmjs.com/package/proxyquire) to replace `amqp` with `exp-fake-amqp` in your tests like this:
+
+```javascript
+var fakeAmqp = require("exp-fake-amqp");
+var proxyquire = require("proxyquire");
+
+proxyquire("exp-amqp-connection", {
+  amqp: fakeAmqp
+});
 ```
